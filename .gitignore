@@ -1,0 +1,7 @@
+# The generated directory for testing
+concord-terraform/
+test-results.txt
+
+pom.xml
+.idea/
+*.iml

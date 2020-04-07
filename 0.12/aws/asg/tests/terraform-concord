@@ -1,0 +1,52 @@
+source "$HOME/.concord/profile"
+pem="$HOME/.concord/${AWS_PEM}"
+sshRetries=10
+
+function debug() {
+  message=$1
+  if [ ! -z "$BATS_FILE" ]; then
+    echo "# ${message}" >&3
+  else
+    echo "${message}"
+  fi
+}
+
+[ "$1" = "debug" ] && debug=true
+
+[ ! -z "${debug}" ] && debug "Getting instanceId of ASG compute..."
+
+instanceId=$(aws autoscaling \
+  describe-auto-scaling-groups \
+  --auto-scaling-group-names concord-testing \
+  --region ${AWS_REGION} \
+  --profile ${AWS_PROFILE} | \
+  jq -r .AutoScalingGroups[0].Instances[0].InstanceId)
+
+[ ! -z "${debug}" ] && debug "instanceId = ${instanceId}"
+
+while STATE=$(aws ec2 describe-instances --region ${AWS_REGION} --profile ${AWS_PROFILE} --instance-ids ${instanceId} --output text --query 'Reservations[*].Instances[*].State.Name'); test "$STATE" != "running"
+do
+  [ ! -z "${debug}" ] && debug "Checking if ${instanceId} is running..."
+  sleep 10;
+done;
+
+#aws ec2 wait instance-running \
+#  --instance-ids ${instanceId} \
+#  --region ${AWS_REGION} \
+#  --profile ${AWS_PROFILE}
+
+publicIp=$(aws ec2 describe-instances \
+  --instance-ids ${instanceId} \
+  --region ${AWS_REGION} \
+  --profile ${AWS_PROFILE} | \
+  jq -r .Reservations[0].Instances[0].PublicIpAddress)
+
+[ ! -z "${debug}" ] && debug "publicIp = ${publicIp}"
+
+for i in {1..$sshRetries}
+do
+  [ ! -z "${debug}" ] && debug "Attempt ${i} to connect to ASG compute ..."
+  ssh -o "StrictHostKeyChecking no" \
+      -o ConnectTimeout=10 -i ${pem} \
+      -q ubuntu@${publicIp} exit && echo "OK" && break
+done

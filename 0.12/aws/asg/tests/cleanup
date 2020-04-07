@@ -1,0 +1,2 @@
+#!/bin/sh
+aws iam delete-instance-profile --instance-profile-name concord-testing-instance-profile --profile experimentation-automation

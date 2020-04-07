@@ -1,0 +1,9 @@
+# Terraform's s3 resource doesn't let you use a variable in the lifecycle block
+# for setting the prevent destroy option. You could potentially use condition tricks
+# with counts, but then you have to duplicate resource blocks, and you have two
+# different resource names which then forces you to change your outputs and what
+# you look for in your tests. Just easier to provide a hook to swap the value so
+# that we can automate destroying the s3 bucket when we're done.
+
+sed -e 's/prevent_destroy = true/prevent_destroy = false/' s3-main.tf > tmp
+mv tmp s3-main.tf

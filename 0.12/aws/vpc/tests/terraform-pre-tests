@@ -1,0 +1,4 @@
+cidr=$(./terraform-free-cidr)
+sed -e "s@\$CIDR@$cidr@" terraform.tfvars.json > tmp
+mv tmp terraform.tfvars.json
+rm -f 00-data.tf
