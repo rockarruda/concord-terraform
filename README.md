@@ -51,7 +51,7 @@ You require a `$HOME/.concord/${AWS_ACCOUNT}-${AWS_USER}-${AWS_REGION}.pem` file
 You can run an individual test using:
 
 ```
-./test.sh <module>
+./test.sh -m <module>
 ```
 
 To run the test for the `ec2` module you would run:
