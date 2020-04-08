@@ -75,15 +75,16 @@ To run all the tests for all modules you would run:
 And you would get something like the following:
 
 ```
-Module asg ............... OK (3m 21s)
-Module dynamodb .......... OK (38s)
-Module ec2 ............... OK (1m 39s)
-Module id ................ OK (31s)
-Module instance-profile .. OK (38s)
-Module launch-template ... OK (30s)
-Module rds-postgres ...... OK (10m 7s)
-Module s3 ................ OK (46s)
-Module vpc ............... OK (3m 27s)
+Module asg ............... OK (3m 23s)
+Module dynamodb .......... OK (1m 4s)
+Module ec2 ............... OK (2m 14s)
+Module eks ............... OK (4m 12s)
+Module id ................ OK (27s)
+Module instance-profile .. OK (44s)
+Module launch-template ... OK (28s)
+Module rds-postgres ...... OK (9m 22s)
+Module s3 ................ OK (54s)
+Module vpc ............... OK (3m 38s)
 ```
 
 ### Debugging
