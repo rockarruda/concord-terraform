@@ -31,6 +31,7 @@ function testModule() {
             for requirement in $(cat terraform-requirements)
             do
               cp ${modulesPath}/${requirement}/*.tf ${terraformDir}
+              cp ${modulesPath}/${requirement}/*.json ${terraformDir}
             done
           fi
 
