@@ -10,6 +10,15 @@ data "aws_subnet_ids" "selected" {
   vpc_id = data.aws_vpc.selected.id
 }
 
+data "aws_subnet_ids" "selected_public_subnets" {
+  vpc_id = data.aws_vpc.selected.id
+
+  filter {
+    name = "map-public-ip-on-launch"
+    values = [true]
+  }
+}
+
 data "aws_security_groups" "selected" {
   filter {
     name   = "vpc-id"
