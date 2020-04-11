@@ -12,25 +12,23 @@ You require a `~/.concord/profile` that is a symlink to a file, or a file with a
 # ------------------------------------------------------------------------------
 # Concord
 # ------------------------------------------------------------------------------
-CONCORD_VERSION=1.44.0
+CONCORD_VERSION=1.46.0
 CONCORD_ORGANIZATION=starburstdata
 CONCORD_DOCKER_NAMESPACE=walmartlabs
 CONCORD_HOST_PORT=localhost:8080
 CONCORD_API_TOKEN=<???>
-CONCORD_ACCOUNT="experimentation"
-CONCORD_USER="automation"
-CONCORD_REGION="us-east-2"
 
 # ------------------------------------------------------------------------------
 # AWS
 # ------------------------------------------------------------------------------
-AWS_ACCOUNT="${CONCORD_ACCOUNT}"
-AWS_USER="${CONCORD_USER}"
-AWS_REGION="${CONCORD_REGION}"
+AWS_USER="automation"
+AWS_ACCOUNT="experimentation"
+AWS_REGION="us-east-2"
+AWS_NAMESPACE="${AWS_ACCOUNT}-${AWS_USER}"
 AWS_CREDENTIALS="$HOME/.aws/credentials"
-AWS_PROFILE="${AWS_ACCOUNT}-${AWS_USER}"
-AWS_KEYPAIR="${AWS_USER}"
-AWS_PEM="${AWS_ACCOUNT}-${AWS_USER}-${AWS_REGION}.pem"
+AWS_PROFILE="${AWS_NAMESPACE}"
+AWS_KEYPAIR="${AWS_PROFILE}-${AWS_REGION}"
+AWS_PEM="${AWS_KEYPAIR}.pem"
 ```
 
 For running the tests
