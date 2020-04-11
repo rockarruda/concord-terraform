@@ -9,3 +9,5 @@
 - Try to use the BATS method for pre/post hooks instead of the custom mechanism used here
 
 - Integrate bats-assert
+
+- For the whole test suite it would be safest to create a VPC to run all the tests in and then destroy the VPC
