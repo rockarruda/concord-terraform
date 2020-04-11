@@ -8,7 +8,7 @@ version="0.12"
 provider="aws"
 testResults="${basedir}/test-results.txt"
 awsCredentials="${basedir}/.test/*get-aws-profile.sh"
-awsProfile="${CONCORD_ACCOUNT}-${CONCORD_USER}"
+awsProfile="${AWS_PROFILE}"
 modulesPath="${basedir}/${version}/${provider}"
 
 function testModule() {
