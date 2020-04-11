@@ -5,3 +5,5 @@ test-results.txt
 pom.xml
 .idea/
 *.iml
+
+.DS_Store  
