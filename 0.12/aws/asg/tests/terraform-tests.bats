@@ -1,9 +1,8 @@
-asg_arn="$(cat terraform-outputs.json | jq -r .asg.value.arn)"
-asg_id="$(cat terraform-outputs.json | jq -r .asg.value.id)"
+load terraform
 
 @test "Validate outputs of Terraform 'asg' module" {
-  [ "$asg_arn" != "" ]
-  [ "$asg_id" = "concord-testing" ]
+  assertTerraformOutputNotEmpty ".asg.value.arn"
+  assertTerraformOutputEquals "concord-testing" ".asg.value.id"
 }
 
 @test "Validate SSH connectivity to provisioned ASG compute" {
