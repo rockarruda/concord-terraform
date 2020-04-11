@@ -18,6 +18,7 @@ function processFiles() {
   cp ${data} ${terraformDir}
 
   # Test
+  cp ${basedir}/.test/terraform.bash ${terraformDir}
   cp ${terraformVars} ${terraformDir}
   cp terraform* ${terraformDir}
   [ -f .noterraform ] && cp .noterraform ${terraformDir}
