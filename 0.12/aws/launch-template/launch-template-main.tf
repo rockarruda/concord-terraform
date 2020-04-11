@@ -23,14 +23,15 @@ resource "aws_launch_template" "main" {
   #
   # The example in the Terraform docs is wrong
   #
-  #vpc_security_group_ids = data.aws_security_groups.selected.ids
+  #vpc_security_group_ids = [aws_security_group.main.id]
 
   key_name               = var.launch_template_keypair
   user_data              = filebase64(var.launch_template_user_data)
 
   network_interfaces {
     associate_public_ip_address = var.launch_template_associate_public_ip
-    security_groups = data.aws_security_groups.selected.ids
+    security_groups             = [aws_security_group.main.id]
+    delete_on_termination       = true # not sure why you would ever want this to be false, otherwise the SG won't delete
   }
 
   monitoring {
@@ -54,5 +55,28 @@ resource "aws_launch_template" "main" {
     tags = {
       Name = var.launch_template_name
     }
+  }
+}
+
+# For a launch template that might be used with an ASG or compute, it's almost
+# always the case you want to create a customized security groups for the set
+# of computes that are being created.
+
+resource "aws_security_group" "main" {
+  name = var.launch_template_name
+  vpc_id = data.aws_vpc.selected.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
