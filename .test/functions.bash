@@ -26,9 +26,6 @@ function processFiles() {
   cp -r ${modulePath}/*.tf ${terraformDir}
   # suppress the error message and exit code
   cp -r ${modulePath}/*.json ${terraformDir} 2>/dev/null || :
-
-  # User content last to override anything this needs to be an extension point
-  # cp provision.sh ${terraformDir}
 }
 
 function processTerraformVars() {
