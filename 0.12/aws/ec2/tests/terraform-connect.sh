@@ -1,6 +1,8 @@
 source "$HOME/.concord/profile"
+source "${PWD}/terraform.bash"
+
 pem="$HOME/.concord/${AWS_PEM}"
-public_ip="$(cat terraform-outputs.json | jq -r .ec2_instance.value.public_ip)"
+public_ip="$(terraformOutputValue .ec2_instance.value.public_ip)"
 
 # Wait up to 5 minutes
 for i in {1..30}

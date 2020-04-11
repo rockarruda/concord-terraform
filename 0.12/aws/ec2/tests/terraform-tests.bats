@@ -1,11 +1,9 @@
-ec2_arn="$(cat terraform-outputs.json | jq -r .ec2_instance.value.arn)"
-ec2_public_ip="$(cat terraform-outputs.json | jq -r .ec2_instance.value.public_ip)"
-ec2_volume_size="$(cat terraform-outputs.json | jq -r .ec2_instance.value.root_block_device[0].volume_size)"
+load terraform
 
 @test "Validate outputs of Terraform 'ec2' module" {
-  [ "$ec2_arn" != "" ]
-  [ "$ec2_public_ip" != "" ]
-  [ "$ec2_volume_size" = "15" ]
+  assertTerraformOutputNotEmpty .ec2_instance.value.arn
+  assertTerraformOutputNotEmpty .ec2_instance.value.public_ip
+  assertTerraformOutputEquals 15 .ec2_instance.value.root_block_device[0].volume_size
 }
 
 @test "Validate SSH connectivity to provisioned EC2 compute" {
