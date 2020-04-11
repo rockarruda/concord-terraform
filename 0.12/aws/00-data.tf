@@ -15,4 +15,10 @@ data "aws_security_groups" "selected" {
     name   = "vpc-id"
     values = [data.aws_vpc.selected.id]
   }
+  # We want to retrieve the default security group only. This prevents picking
+  # up security groups that may be too restrictive for our tests to run
+  filter {
+    name   = "group-name"
+    values = [var.security_group_name_filter]
+  }
 }
