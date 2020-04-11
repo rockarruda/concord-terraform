@@ -1,7 +1,7 @@
 resource "aws_db_subnet_group" "main" {
   name        = "${var.rds_postgres_identifier}-subnet"
   description = "Subnet for ${var.rds_postgres_identifier}"
-  subnet_ids  = data.aws_subnet_ids.selected.ids
+  subnet_ids  = data.aws_subnet_ids.selected_public_subnets.ids
   tags        = var.tags
 }
 

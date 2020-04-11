@@ -1,9 +1,7 @@
-elements=".account_id.value, .caller_arn.value, .caller_user.value"
+load terraform
 
 @test "Validate outputs of Terraform 'id' module" {
-  run bash -c "cat terraform-outputs.json | jq -r '${elements}'"
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" != "" ]
-  [ "${lines[1]}" != "" ]
-  [ "${lines[2]}" != "" ]
+  assertTerraformOutputNotEmpty ".account_id.value"
+  assertTerraformOutputNotEmpty ".caller_arn.value"
+  assertTerraformOutputNotEmpty ".caller_user.value"
 }
