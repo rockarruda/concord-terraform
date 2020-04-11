@@ -11,3 +11,7 @@
 - Integrate bats-assert
 
 - For the whole test suite it would be safest to create a VPC to run all the tests in and then destroy the VPC
+
+- Make each module self-contained and don't rely on the shared 00-data.tf, some modules need it and some don't which is too complicated
+
+- Tag all resources in a known way to make querying and filtering easier
