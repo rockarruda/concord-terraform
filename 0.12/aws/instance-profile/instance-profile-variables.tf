@@ -5,5 +5,10 @@ variable "instance_profile_role_name" {
 
 variable "instance_profile_role_arn" {
   type        = string
-  description = "The role ARN to apply to this role" 
+  description = "The role ARN to apply to this role"
+}
+
+variable "instance_profile_assume_role_policy" {
+  type = string
+  default = "instance-profile-policy-assume-role.json"
 }
