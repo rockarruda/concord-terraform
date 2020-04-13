@@ -6,6 +6,7 @@ resource "aws_instance" "main" {
   associate_public_ip_address = var.ec2_instance_public
   user_data                   = fileexists(var.ec2_user_data) ? filebase64(var.ec2_user_data) : ""
   tags                        = merge({ Name = var.ec2_instance_name }, var.tags)
+  iam_instance_profile        = var.ec2_instance_profile
 
   root_block_device {
     volume_type = var.ec2_root_block_device_type

@@ -21,9 +21,13 @@ variable "ec2_instance_public" {
   default = true
 }
 
+variable "ec2_instance_profile" {
+  type = string
+}
+
 variable "ec2_user_data" {
   type = string
-  default = ""
+  default = "provision.sh"
   description = "The user_data file to do the initial compute provisioning"
 }
 
