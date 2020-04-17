@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Naive CIDR finder for tests, only tries 10.x.0.0 and only returns a /24
+
+# JSON array to bash array: 10.1.1.1/24 -> 10.1.1.1
+takenCidrIps=( $(aws ec2 describe-vpcs | jq -r '.Vpcs[].CidrBlock' | sed 's/\/.*$//') )
+
+# Try 10.1.0.0 to 10.50.0.0
+i=1; eval printf -v cidrIps "%s\ " 10.{$i..50}.0.0
+
+for tryCidrIp in $cidrIps
+do
+  # Check if our cidrIp is contained in the takenCidrIps array
+  if [[ ! " ${takenCidrIps[@]} " =~ " ${tryCidrIp} " ]]; then
+    # We found a free cidrIp
+    echo "${tryCidrIp}/24"; break
+  fi
+done
