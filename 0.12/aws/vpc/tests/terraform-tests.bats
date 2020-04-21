@@ -1,4 +1,5 @@
 load terraform
+load variables
 
 region="$(cat terraform.tfvars.json | jq -r .aws_region | tr -d "\r\n\t")"
 availability_zones=( "${region}a" "${region}b" )
@@ -8,7 +9,7 @@ availability_zones=( "${region}a" "${region}b" )
   # Verify that VPC was created
   assertTerraformOutputEquals $region '.region.value'
   assertTerraformOutputNotEmpty ".vpc.value.id"
-  assertTerraformOutputEquals "concord-testing-vpc" ".vpc.value.tags.Name"
+  assertTerraformOutputEquals "${NAME}-vpc" ".vpc.value.tags.Name"
 
   # Verify that count of created public subnets matches no. of AZ's
   assertTerraformOutputMapSize ${#availability_zones[@]} '.public_subnets.value'

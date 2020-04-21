@@ -1,4 +1,5 @@
 load terraform
+load variables
 
 @test "Validate outputs of Terraform 'ec2' module" {
   assertTerraformOutputNotEmpty .ec2_instance.value.arn

@@ -1,5 +1,6 @@
 source "$HOME/.concord/profile"
 source "${PWD}/terraform.bash"
+source "${PWD}/variables.bash"
 
 pem="$HOME/.concord/${AWS_PEM}"
 public_ip="$(terraformOutputValue .ec2_instance.value.public_ip)"

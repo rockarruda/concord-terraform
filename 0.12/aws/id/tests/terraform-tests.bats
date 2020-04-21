@@ -1,4 +1,5 @@
 load terraform
+load variables
 
 @test "Validate outputs of Terraform 'id' module" {
   assertTerraformOutputNotEmpty ".account_id.value"
