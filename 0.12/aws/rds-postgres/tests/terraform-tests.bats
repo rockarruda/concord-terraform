@@ -1,5 +1,8 @@
 load terraform
 
+rds_db_host="$(cat terraform-outputs.json | jq -r .rds_db_host.value)"
+rds_postgres_port="$(cat terraform-outputs.json | jq -r .rds_postgres_port.value)"
+
 @test "Validate outputs of Terraform 'rds-postgres' module" {
   assertTerraformOutputNotEmpty ".rds_db_arn.value"
   assertTerraformOutputNotEmpty ".rds_db_endpoint.value"
