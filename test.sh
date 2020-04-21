@@ -11,6 +11,33 @@ awsCredentials="${basedir}/.test/*get-aws-profile.sh"
 awsProfile="${AWS_PROFILE}"
 modulesPath="${basedir}/${version}/${provider}"
 
+if [ -z "${AWS_CREDENTIALS}" ]; then
+  echo 'You must define the envar ${AWS_CREDENTIALS}'.
+  exit
+elif [ ! -f ${AWS_CREDENTIALS} ]; then
+  echo "The specified AWS_CREDENTIALS file '${AWS_CREDENTIALS}' does not exist. You must provide a valid credentials file."
+  exit
+fi
+
+if [ -z "${AWS_PROFILE}" ]; then
+  echo 'You must define the envar ${AWS_PROFILE}'.
+  exit
+else
+  ${awsCredentials} --profile=${AWS_PROFILE} --key > /dev/null 2>&1
+  if [ "$?" = "5" ]; then
+    echo "The specified profile '${AWS_PROFILE}' does not exist in '${AWS_CREDENTIALS}'. You must provide a valid profile."
+    exit
+  fi
+fi
+
+if [ -z "${AWS_PEM}" ]; then
+  echo 'You must define the envar ${AWS_PEM}'.
+  exit
+elif [ ! -f ${HOME}/.concord/${AWS_PEM} ]; then
+  echo "The specified AWS_PEM file '${HOME}/.concord/${AWS_PEM}' does not exist. You must provide a valid credentials file."
+  exit
+fi
+
 function testModule() {
   module=$1 #moduleId
   modulePath=$2
