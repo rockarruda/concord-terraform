@@ -21,8 +21,12 @@ variable "ec2_instance_public" {
   default = true
 }
 
+# Setting this to "" by passes requiring and actual instance profile. Not sure
+# if this is stanard TF behavior, or something about this module, but it prevents
+# us from having to create two resources and use the count/ternary trick.
 variable "ec2_instance_profile" {
   type = string
+  default = ""
 }
 
 variable "ec2_user_data" {
