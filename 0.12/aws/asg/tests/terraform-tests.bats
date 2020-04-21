@@ -1,8 +1,9 @@
 load terraform
+load variables
 
 @test "Validate outputs of Terraform 'asg' module" {
   assertTerraformOutputNotEmpty ".asg.value.arn"
-  assertTerraformOutputEquals "concord-testing" ".asg.value.id"
+  assertTerraformOutputEquals $NAME ".asg.value.id"
 }
 
 @test "Validate SSH connectivity to provisioned ASG compute" {

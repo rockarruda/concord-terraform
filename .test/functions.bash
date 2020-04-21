@@ -32,12 +32,22 @@ function processTerraformVars() {
   # ------------------------------------------------------------------
   # AWS credentials processing
   # ------------------------------------------------------------------
+
+  # TODO: generalize this and put somewhere more standard, but for now this
+  # allows many test runs to work at the same time in the same AWS account
+  SUFFIX="$((10000000 + RANDOM % 99999999))"
+  NAME="concord-testing-${SUFFIX}"t
+  echo "SUFFIX=$SUFFIX" > variables.bash
+  echo "NAME=$NAME" >> variables.bash
+
   AWS_ACCESS_KEY_ID=$(${awsCredentials} --profile=${awsProfile} --key)
   AWS_SECRET_ACCESS=$(${awsCredentials} --profile=${awsProfile} --secret)
   sed -e "s@\$AWS_ACCESS_KEY_ID@$AWS_ACCESS_KEY_ID@" ${terraformVars} | \
   sed -e "s@\$AWS_SECRET_ACCESS@$AWS_SECRET_ACCESS@" | \
   sed -e "s@\$AWS_USER@$AWS_USER@" | \
   sed -e "s@\$AWS_REGION@$AWS_REGION@" | \
+  sed -e "s@\$SUFFIX@$SUFFIX@" | \
+  sed -e "s@\$NAME@$NAME@" | \
   sed -e "s@\$AWS_KEYPAIR@$AWS_KEYPAIR@" > tmp ; mv tmp ${terraformVars}
 }
 

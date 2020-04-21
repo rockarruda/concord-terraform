@@ -1,4 +1,5 @@
 source "$HOME/.concord/profile"
+source "${PWD}/variables.bash"
 pem="$HOME/.concord/${AWS_PEM}"
 sshRetries=10
 
@@ -20,7 +21,7 @@ debug "Getting instanceId of ASG compute..."
 
 while instanceId=$(aws autoscaling \
   describe-auto-scaling-groups \
-  --auto-scaling-group-names concord-testing \
+  --auto-scaling-group-names $NAME \
   --region ${AWS_REGION} \
   --profile ${AWS_PROFILE} | \
   jq -r .AutoScalingGroups[0].Instances[0].InstanceId | \
