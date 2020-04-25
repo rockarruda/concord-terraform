@@ -3,12 +3,12 @@ variable "ec2_instance_name" {
 }
 
 variable "ec2_ssh_port" {
-  type = number
+  type    = number
   default = 22
 }
 
 variable "ec2_instance_type" {
-  type = string
+  type    = string
   default = "t2.micro"
 }
 
@@ -17,7 +17,7 @@ variable "ec2_keypair" {
 }
 
 variable "ec2_instance_public" {
-  type = bool
+  type    = bool
   default = true
 }
 
@@ -25,27 +25,27 @@ variable "ec2_instance_public" {
 # if this is stanard TF behavior, or something about this module, but it prevents
 # us from having to create two resources and use the count/ternary trick.
 variable "ec2_instance_profile" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "ec2_user_data" {
-  type = string
-  default = "provision.sh"
+  type        = string
+  default     = "provision.sh"
   description = "The user_data file to do the initial compute provisioning"
 }
 
 variable "ec2_root_block_device_type" {
-  type = string
+  type    = string
   default = "gp2"
 }
 
 variable "ec2_root_block_device_size" {
-  type = number
+  type    = number
   default = 10
 }
 
 variable "ec2_root_block_device_delete_on_termination" {
-  type = bool
+  type    = bool
   default = true
 }
