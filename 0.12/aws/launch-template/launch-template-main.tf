@@ -25,8 +25,8 @@ resource "aws_launch_template" "main" {
   #
   #vpc_security_group_ids = [aws_security_group.main.id]
 
-  key_name  = var.launch_template_keypair
-  user_data = filebase64(var.launch_template_user_data)
+  key_name               = var.launch_template_keypair
+  user_data              = filebase64(var.launch_template_user_data)
 
   network_interfaces {
     associate_public_ip_address = var.launch_template_associate_public_ip
@@ -63,7 +63,7 @@ resource "aws_launch_template" "main" {
 # of computes that are being created.
 
 resource "aws_security_group" "main" {
-  name   = var.launch_template_name
+  name = var.launch_template_name
   vpc_id = data.aws_vpc.selected.id
 
   egress {
@@ -74,9 +74,9 @@ resource "aws_security_group" "main" {
   }
 
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }

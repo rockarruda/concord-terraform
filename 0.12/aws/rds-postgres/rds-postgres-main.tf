@@ -25,10 +25,10 @@ resource "aws_db_instance" "main" {
   skip_final_snapshot     = true
   db_subnet_group_name    = aws_db_subnet_group.main.id
   # Postgres
-  name     = var.rds_postgres_database_name
-  port     = var.rds_postgres_port
-  username = var.rds_postgres_username
-  password = var.rds_postgres_password
+  name                    = var.rds_postgres_database_name
+  port                    = var.rds_postgres_port
+  username                = var.rds_postgres_username
+  password                = var.rds_postgres_password
 
   vpc_security_group_ids = [
     aws_security_group.main.id

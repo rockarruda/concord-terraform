@@ -11,8 +11,7 @@ resource "aws_subnet" "public" {
       tags,
     ]
   }
-  map_public_ip_on_launch = true
-  depends_on              = [aws_vpc.main, var.vpc_availability_zones]
+  depends_on = [aws_vpc.main, var.vpc_availability_zones]
 }
 
 # Associate public subnet with VPC main route table
