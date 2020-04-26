@@ -3,16 +3,16 @@ variable "dynamodb_table_name" {
 }
 
 variable "dynamodb_billing_mode" {
-  type = string
+  type    = string
   default = "PROVISIONED"
 }
 
 variable "dynamodb_read_capacity" {
-  type = number
+  type    = number
   default = 20
 }
 
 variable "dynamodb_write_capacity" {
-  type = number
+  type    = number
   default = 20
 }

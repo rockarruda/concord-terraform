@@ -4,12 +4,12 @@ variable "rds_postgres_identifier" {
 }
 
 variable "rds_postgres_storage_size" {
-  type = number
+  type        = number
   description = "Storage size in GB"
 }
 
 variable "rds_postgres_storage_type" {
-  type = string
+  type    = string
   default = "gp2"
 }
 
@@ -22,17 +22,17 @@ variable "rds_postgres_public" {
 }
 
 variable "rds_postgres_engine_version" {
-  type = string
+  type    = string
   default = "10.6"
 }
 
 variable "rds_postgres_database_name" {
-  type = string
+  type        = string
   description = "Name of the database to create in the RDS instance"
 }
 
 variable "rds_postgres_port" {
-  type = number
+  type    = number
   default = 5432
 }
 

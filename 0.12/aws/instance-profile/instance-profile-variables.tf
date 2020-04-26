@@ -15,6 +15,6 @@ variable "instance_profile_role_policy" {
 }
 
 variable "instance_profile_assume_role_policy" {
-  type = string
+  type    = string
   default = "instance-profile-policy-assume-role.json"
 }

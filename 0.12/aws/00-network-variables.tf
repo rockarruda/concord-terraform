@@ -6,7 +6,7 @@ variable "vpc_name" {
 }
 
 variable "security_group_name_filter" {
-  type = string
-  default = "**"
+  type        = string
+  default     = "**"
   description = "Can be a name or an expression"
 }

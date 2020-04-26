@@ -10,7 +10,7 @@ resource "aws_vpc_peering_connection" "vpc_peer_conn" {
 }
 
 data "aws_vpc_peering_connection" "vpc_peer_conn_data" {
-  for_each        = aws_vpc_peering_connection.vpc_peer_conn
-  id              = each.value.id
+  for_each   = aws_vpc_peering_connection.vpc_peer_conn
+  id         = each.value.id
   depends_on = [aws_vpc_peering_connection.vpc_peer_conn]
 }

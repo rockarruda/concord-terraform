@@ -9,14 +9,14 @@ resource "aws_instance" "main" {
   iam_instance_profile        = var.ec2_instance_profile
 
   root_block_device {
-    volume_type = var.ec2_root_block_device_type
-    volume_size = var.ec2_root_block_device_size
+    volume_type           = var.ec2_root_block_device_type
+    volume_size           = var.ec2_root_block_device_size
     delete_on_termination = var.ec2_root_block_device_delete_on_termination
   }
 }
 
 resource "aws_security_group" "main" {
-  name = var.ec2_instance_name
+  name   = var.ec2_instance_name
   vpc_id = data.aws_vpc.selected.id
 
   egress {
@@ -27,9 +27,9 @@ resource "aws_security_group" "main" {
   }
 
   ingress {
-    from_port = var.ec2_ssh_port
-    to_port   = var.ec2_ssh_port
-    protocol  = "tcp"
+    from_port   = var.ec2_ssh_port
+    to_port     = var.ec2_ssh_port
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
