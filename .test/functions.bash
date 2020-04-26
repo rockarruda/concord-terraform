@@ -36,7 +36,7 @@ function processTerraformVars() {
   # TODO: generalize this and put somewhere more standard, but for now this
   # allows many test runs to work at the same time in the same AWS account
   SUFFIX="$((10000000 + RANDOM % 99999999))"
-  NAME="concord-testing-${SUFFIX}"t
+  NAME="concord-testing-${SUFFIX}"
   echo "SUFFIX=$SUFFIX" > variables.bash
   echo "NAME=$NAME" >> variables.bash
 
