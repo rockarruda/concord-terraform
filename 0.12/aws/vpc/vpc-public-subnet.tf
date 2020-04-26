@@ -5,12 +5,14 @@ resource "aws_subnet" "public" {
   availability_zone = each.key
   cidr_block        = each.value.public_subnet_cidr
   tags              = merge({ Name = "${var.vpc_name}-${each.key}-public" }, var.tags, each.value.tags)
+  map_public_ip_on_launch = true
   lifecycle {
     ignore_changes = [
       # Ignore changes to tags, e.g. because eks adds bunch of tags
       tags,
     ]
   }
+  
   depends_on = [aws_vpc.main, var.vpc_availability_zones]
 }
 
