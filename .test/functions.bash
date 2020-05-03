@@ -17,6 +17,7 @@ function processFiles() {
   cp ${modulesPath}/00-network-variables.tf ${targetDir}
   cp ${modulesPath}/00-provider-credentials.tf ${targetDir}
   cp ${modulesPath}/00-provider-credentials-variables.tf ${targetDir}
+  cp ${modulesPath}/provisio.sh ${targetDir}
 
   # Data
   data="${modulesPath}/ec2/ec2-ubuntu-18.04.tf"
