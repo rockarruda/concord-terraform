@@ -1,5 +1,6 @@
 source "$HOME/.concord/profile"
 source "${PWD}/variables.bash"
+source "${PWD}/terraform.bash"
 pem="$HOME/.concord/${AWS_PEM}"
 sshRetries=10
 
@@ -17,17 +18,19 @@ function debug() {
 [ "$1" = "debug" ] && debug=true
 [ "$2" = "bats" ] && bats=true
 
-debug "Getting instanceId of ASG compute..."
+debug "Getting instanceId of EC2 fleet compute..."
 
-while instanceId=$(aws autoscaling \
-  describe-auto-scaling-groups \
-  --auto-scaling-group-names $NAME \
+fleetId=$(terraformOutputValue .ec2_fleet.value.id)
+
+while instanceId=$(aws ec2 \
+  describe-fleet-instances \
+  --fleet-id ${fleetId} \
   --region ${AWS_REGION} \
   --profile ${AWS_PROFILE} | \
-  jq -r .AutoScalingGroups[0].Instances[0].InstanceId | \
+  jq -r .ActiveInstances[0].InstanceId | \
   tr -d "\r\n\t"); test "$instanceId" = "null"
   do
-    debug "Waiting for ASG instance to become ready ..."
+    debug "Waiting for EC2 fleet instance to become ready ..."
     sleep 3
   done
 
@@ -40,11 +43,11 @@ while STATE=$(aws ec2 \
   --instance-ids ${instanceId} \
   --output text --query 'Reservations[*].Instances[*].State.Name'); test "$STATE" != "running"
   do
-    debug "Waiting for ASG ${instanceId} to enter 'running' state, currently '${STATE}' ..."
+    debug "Waiting for EC2 fleet ${instanceId} to enter 'running' state, currently '${STATE}' ..."
     sleep 3
   done
 
-debug "Instance is in ${STATE}"
+debug "Instance is in the ${STATE} state"
 
 publicIp=$(aws ec2 describe-instances \
   --instance-ids ${instanceId} \
@@ -61,7 +64,7 @@ debug "Instance SSH = ${sshCommand}"
 
 for i in {1..30}
 do
-  debug "Attempt ${i} to connect to ASG compute ..."
+  debug "Attempt ${i} to connect to EC2 fleet compute ..."
   ${sshCommand} && echo "OK" && break
   sleep 10
 done
