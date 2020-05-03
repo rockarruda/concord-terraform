@@ -1,0 +1,9 @@
+<runtime>
+    <!-- Target -->
+    <archive useRoot="false" name="${project.artifactId}-${project.version}.zip"/>
+
+    <!-- Notices -->
+    <fileSet to="0.12">
+      <directory path="${basedir}/0.12"/>
+    </fileSet>
+</runtime>
