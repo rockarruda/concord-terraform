@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# Note: currently this is AWS specific. A way to pull tag metadata from other providers
+# would be required to achieve the same support as with AWS
+
+# TODO:
+# - add support for installing packages from tag metadata
+# - add support for installing pip|pip3 packages from tag metadata
+# - align the method for build VMs as building docker containers
+# - investigage if snaps can be used for all package installation across distros
+
 # ------------------------------------------------------------------------------
 # A general way to provision a compute using this as the user_data for cloud-init
 # ------------------------------------------------------------------------------
@@ -20,14 +29,17 @@
 #   "provisio.applicationCoordinate": "ca.vanzyl:starburst-concord-agent:tar.gz:1.0.0"
 # }
 #
-# You can also combine the Provisio tool and application installer together, you
-# just need ensure the correct tags are present on the compute.
+# You can also all the Provisio features together, you just need ensure the
+# correct tags are present on the compute.
 # ------------------------------------------------------------------------------
 # Provisio instance tag ids
 # ------------------------------------------------------------------------------
 provisioBucketPathTag="provisio.bucketPath"
 provisioInstallerProfileTag="provisio.installerProfile"
 provisioApplicationCoordinateTag="provisio.applicationCoordinate"
+provisioSnapsTag="provisio.snaps"
+provisioDebsTag="provisio.debs"
+provisioRpmsTag="provisio.rpms"
 # ------------------------------------------------------------------------------
 # Notes:
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-identity-documents.html
@@ -58,6 +70,16 @@ function mavenCoordinateToArtifactPath() {
     artifactPath="${groupId}/${artifactId}/${version}/${artifactId}-${version}-${classifier}.${extension}"
   fi
   echo $artifactPath
+}
+
+function awsTagValue() {
+  region=$1
+  instanceId=$2
+  tag=$3
+
+  aws ec2 describe-tags --region ${region} \
+    --filters "Name=resource-id,Values=${instanceId}" "Name=key,Values=${tag}" \
+    --query 'Tags[0].Value' --output=text
 }
 
 # Do everything to setup the machine as root
@@ -92,17 +114,9 @@ instanceId=$(wget -qO- http://instance-data/latest/meta-data/instance-id)
 # Determine the region our instance resides in
 region=$(wget -qO- http://instance-data/latest/meta-data/placement/availability-zone | sed 's/.$//')
 
-provisioBucketPath=$(aws ec2 describe-tags --region $region \
-  --filters "Name=resource-id,Values=${instanceId}" "Name=key,Values=${provisioBucketPathTag}" \
-  --query 'Tags[0].Value' --output=text)
-
-provisioInstallerProfile=$(aws ec2 describe-tags --region $region \
-  --filters "Name=resource-id,Values=${instanceId}" "Name=key,Values=provisio.${provisioInstallerProfileTag}" \
-  --query 'Tags[0].Value' --output=text)
-
-provisioApplicationCoordinate=$(aws ec2 describe-tags --region $region \
-  --filters "Name=resource-id,Values=${instanceId}" "Name=key,Values=${provisioApplicationCoordinateTag}" \
-  --query 'Tags[0].Value' --output=text)
+provisioBucketPath=$(awsTagValue ${region} ${instanceId} ${provisioBucketPathTag})
+provisioInstallerProfile=$(awsTagValue ${region} ${instanceId} ${provisioInstallerProfileTag})
+provisioApplicationCoordinate=$(awsTagValue ${region} ${instanceId} ${provisioApplicationCoordinateTag})
 
 # ------------------------------------------------------------------------------
 # Provisio Installer
@@ -138,10 +152,15 @@ if [ ! -z "${provisioApplicationCoordinate}" ]; then
   # Extract the standard metadata from the provisio.tar.gz
   tar xf "${provisioTarGz}" "${provisioDirectory}"
 
-  # Source the variables present in the provisio.bash file
+  # Source the variables present in the provisio.bash file. The variables this manifest
+  # can set are:
+  #
+  # - ${user}
+  # - ${packages}
   source ${provisioManifest}
 
-  # Add specified user as per provisio manifest
+  # Add specified user as per provisio manifest. This should work on the various
+  # standard linux distributions
   useradd -m ${user} -s /bin/bash
   userHome=$( getent passwd "${user}" | cut -d: -f6 )
 
