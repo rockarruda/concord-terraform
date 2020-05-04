@@ -1,9 +1,12 @@
 <runtime>
-    <!-- Target -->
     <archive useRoot="false" name="${project.artifactId}-${project.version}.zip"/>
 
-    <!-- Notices -->
-    <fileSet to="0.12">
+    <fileSet to="/terraform-resources/0.12">
       <directory path="${basedir}/0.12"/>
     </fileSet>
+
+    <fileSet to="/forms">
+      <directory path="${basedir}/src/main/concord/forms"/>
+    </fileSet>
+
 </runtime>
