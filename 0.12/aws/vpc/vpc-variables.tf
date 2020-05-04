@@ -12,7 +12,7 @@ variable "vpc_assign_ipv6_cidr" {
 variable "vpc_availability_zones" {
   description = "Map consistiong ok availabiltiy zones names as keys and their def. as value"
   type = map(object({
-    public_subnet_cidr   = string
+    public_subnets_cidr  = list(string)
     private_subnets_cidr = list(string)
     tags                 = map(string)
   }))
@@ -30,21 +30,21 @@ variable "vpc_endpoint_s3_policy" {
   type        = string
   default     = <<POLICY
 {
-	"Statement": [
-		{
-			"Action": [
-				"s3:ListBucket",
-				"s3:PutObject",
-				"s3:GetObject",
-				"s3:DeleteObject",
-				"s3:GetObjectTagging"
-			],
-			"Effect": "Allow",
-			"Resource": "arn:aws:s3:::*",
-			"Principal": "*"
-		}
-	],
-	"Version": "2008-10-17"
+  "Statement": [
+    {
+      "Action": [
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:GetObjectTagging"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::*",
+      "Principal": "*"
+    }
+  ],
+  "Version": "2008-10-17"
 }
 POLICY
 }

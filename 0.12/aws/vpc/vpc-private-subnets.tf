@@ -29,23 +29,26 @@ resource "aws_subnet" "private" {
 
 # Create custom route table within VPC for each defined availability zone and add routing to NAT Gateway
 resource "aws_route_table" "private_routes" {
-  for_each = aws_subnet.public
+  count    = length(aws_subnet.public)
   vpc_id   = aws_vpc.main.id
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = lookup(aws_nat_gateway.nat-gateway, each.key).id
+    nat_gateway_id = aws_nat_gateway.nat-gateway[count.index].id
   }
-  tags       = merge({ Name = "${var.vpc_name}-${each.value.availability_zone}-private-route" }, var.tags, lookup(var.vpc_availability_zones, each.value.availability_zone).tags)
+  tags       = merge({ Name = "${var.vpc_name}-${aws_subnet.public[count.index].availability_zone}-private-route" }, var.tags, lookup(var.vpc_availability_zones, aws_subnet.public[count.index].availability_zone).tags)
   depends_on = [aws_nat_gateway.nat-gateway, aws_subnet.private]
 }
 
 # Associate each private route table with private subnets
 locals {
+  let start = 0
   azs_to_private_route = {
-    for public_subnet_key in keys(aws_subnet.public) :
-    lookup(aws_subnet.public, public_subnet_key).availability_zone => lookup(aws_route_table.private_routes, public_subnet_key)
+    while start < length(aws_subnet.public) :
+      aws_subnet.public[start].availability_zone => aws_route_table.private_routes[start]
+      start = start + 1
   }
 }
+
 resource "aws_route_table_association" "private_route_association" {
   count          = length(aws_subnet.private)
   subnet_id      = aws_subnet.private[count.index].id
