@@ -1,0 +1,86 @@
+flows:
+
+  ec2Fleet:
+    - terraformProcessor
+
+    - task: terraform
+      in:
+        toolVersion: "${terraformVersion}"
+        action: apply
+        dir: "${terraformDirectory}"
+        saveOutput: true
+        stateId: "${aws.fleetName}"
+        varFiles:
+          - "${workDir}/terraform/00.auto.tfvars.json"
+
+  terraformProcessor:
+    - task: terraformProcessor
+      in:
+        resourceDirectory: "${terraformResources}"
+        outputDirectory: "${terraformDirectory}"
+        configuration:
+          version: "0.12"
+          provider: "aws"
+          authentication: credentials
+          configuration:
+            aws_region: "${aws.region}"
+            aws_access_key: "${aws.accessKey}"
+            aws_secret_key: "${aws.secretKey}"
+          resources:
+            - type: launch_template
+              variables:
+                launch_template_name: "${aws.fleetName}"
+                launch_template_instance_type: "${aws.instanceType}"
+                launch_template_instance_profile: "${aws.instanceProfile}"
+                launch_template_keypair: "${aws.instanceKeypair}"
+                launch_template_user_data: "${instanceUserData}"
+                launch_template_volume_size: ${aws.instanceVolumeSize}
+            - type: ec2_fleet
+              variables:
+                vpc_name: "${aws.vpcName}"
+                ec2_fleet_name: "${aws.fleetName}"
+                ec2_fleet_tags: ${aws.instanceTags}
+
+  ec2FleetDestroy:
+
+    - terraformProcessor
+
+    - task: terraform
+      in:
+        toolVersion: "${terraformVersion}"
+        debug: ${terraformDebug}
+        action: plan
+        destroy: true
+        dir: "${terraformDirectory}"
+        stateId: ${aws.fleetName}
+        varFiles:
+          - "${workDir}/${terraformDirectory}/00.auto.tfvars.json"
+
+    - if: ${!result.hasChanges}
+      then:
+        - log: "No changes planned, stopping..."
+        - exit
+
+    - form: approvalForm
+      fields:
+        - plan: { type: "string", readonly: true, value: "${result.output}" }
+        - approved: { type: "boolean" }
+      values:
+        processId: "${txId}"
+      yield: true
+
+    - if: ${!approvalForm.approved}
+      then:
+        - throw: "The plan to destroy was not approved"
+
+    - task: terraform
+      in:
+        toolVersion: "${terraformVersion}"
+        debug: ${terraformDebug}
+        verbose: ${terraformDebug}
+        action: apply
+        plan: ${result.planPath}
+        stateId: ${aws.fleetName}
+      retry:
+        times: 3
+        delay: 30

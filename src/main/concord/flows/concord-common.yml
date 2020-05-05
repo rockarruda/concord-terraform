@@ -1,0 +1,12 @@
+configuration:
+  dependencies:
+    - "mvn://ca.vanzyl.concord.plugins:concord-terraform-processor-plugin:0.1.0-SNAPSHOT"
+    - "mvn://com.walmartlabs.concord.plugins:terraform-task:1.22.0"
+  arguments:
+    terraformDebug: false
+    terraformVersion: "0.12.24"
+    terraformResources: "terraform-resources"
+    terraformDirectory: "terraform"
+    # Our general purpose cloud-init user_data script to provision tools,
+    # applications and packages
+    instanceUserData: "provisio.sh"
