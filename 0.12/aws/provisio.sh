@@ -7,7 +7,8 @@
 # - add support for installing packages from tag metadata
 # - add support for installing pip|pip3 packages from tag metadata
 # - align the method for build VMs as building docker containers
-# - investigage if snaps can be used for all package installation across distros
+# - investigate if snaps can be used for all package installation across distros
+# - standard way to generate a parameterized configuration
 
 # ------------------------------------------------------------------------------
 # A general way to provision a compute using this as the user_data for cloud-init

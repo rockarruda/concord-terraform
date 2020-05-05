@@ -20,7 +20,7 @@ function processFiles() {
   cp ${modulesPath}/provisio.sh ${targetDir}
 
   # Data
-  data="${modulesPath}/ec2/ec2-ubuntu-18.04.tf"
+  data="${modulesPath}/00-data-ubuntu-18.04.tf"
   cp ${data} ${targetDir}
 
   # Test
