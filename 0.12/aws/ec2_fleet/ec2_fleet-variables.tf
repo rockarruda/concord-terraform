@@ -48,5 +48,5 @@ variable "ec2_terminate_instances" {
 variable "ec2_fleet_tags" {
   type        = map
   default     = {}
-  description = "The created EC2 fleet will have these tags applied over the default ones (see main.tf)"
+  description = "The created EC2 instances in the fleet will have these tags applied over the default ones (see main.tf)"
 }

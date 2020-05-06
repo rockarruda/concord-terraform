@@ -1,6 +1,6 @@
 resource "aws_ec2_fleet" "main" {
   type                               = var.ec2_fleet_type
-  tags                               = merge({ Name = var.ec2_fleet_name }, var.tags)
+  tags                               = merge({ Name = var.ec2_fleet_name }, var.tags, var.ec2_fleet_tags)
   terminate_instances                = var.ec2_terminate_instances
   excess_capacity_termination_policy = var.ec2_fleet_excess_capacity_termination_policy
 
