@@ -1,7 +1,8 @@
 flows:
 
   ec2:
-    - terraformProcessor
+    - log: "Running the EC2 flow ..."
+    - ec2Terraform
 
     - task: terraform
       in:
@@ -13,7 +14,7 @@ flows:
         varFiles:
           - "${workDir}/terraform/00.auto.tfvars.json"
 
-  terraformProcessor:
+  ec2Terraform:
     - task: terraformProcessor
       in:
         resourceDirectory: "${terraformResources}"
@@ -39,8 +40,8 @@ flows:
                 ec2_root_block_device_size: ${aws.instanceVolumeSize}
 
   ec2Destroy:
-
-    - terraformProcessor
+    - log: "Running the EC2 destroy flow ..."
+    - ec2Terraform
 
     - task: terraform
       in:
