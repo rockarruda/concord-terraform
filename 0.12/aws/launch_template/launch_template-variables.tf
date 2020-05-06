@@ -64,3 +64,8 @@ variable "launch_template_delete_on_termination" {
   description = "Whether the volume should be destroyed on instance termination"
   default     = "true"
 }
+
+variable "launch_template_instance_tags" {
+  type    = map
+  default = {}
+}

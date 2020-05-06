@@ -52,9 +52,7 @@ resource "aws_launch_template" "main" {
 
   tag_specifications {
     resource_type = "instance"
-    tags = {
-      Name = var.launch_template_name
-    }
+    tags = merge({Name = var.launch_template_name}, var.launch_template_instance_tags)
   }
 }
 
