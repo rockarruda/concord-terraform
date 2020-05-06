@@ -1,7 +1,8 @@
 flows:
 
   ec2Fleet:
-    - terraformProcessor
+    - log: "Running the EC2 fleet flow ..."
+    - ec2FleetTerraform
 
     - task: terraform
       in:
@@ -13,7 +14,7 @@ flows:
         varFiles:
           - "${workDir}/terraform/00.auto.tfvars.json"
 
-  terraformProcessor:
+  ec2FleetTerraform:
     - task: terraformProcessor
       in:
         resourceDirectory: "${terraformResources}"
@@ -35,15 +36,16 @@ flows:
                 launch_template_keypair: "${aws.instanceKeypair}"
                 launch_template_user_data: "${instanceUserData}"
                 launch_template_volume_size: ${aws.instanceVolumeSize}
-            - type: ec2_fleet
+                launch_template_instance_tags: ${aws.instanceTags}
+            - type: "ec2_fleet"
               variables:
                 vpc_name: "${aws.vpcName}"
                 ec2_fleet_name: "${aws.fleetName}"
                 ec2_fleet_tags: ${aws.instanceTags}
 
   ec2FleetDestroy:
-
-    - terraformProcessor
+    - log: "Running the EC2 fleet destroy flow ..."
+    - ec2FleetTerraform
 
     - task: terraform
       in:
