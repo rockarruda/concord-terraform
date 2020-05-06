@@ -41,6 +41,7 @@ flows:
               variables:
                 vpc_name: "${aws.vpcName}"
                 ec2_fleet_name: "${aws.fleetName}"
+                ec2_fleet_target_capacity: ${aws.fleetSize}
                 ec2_fleet_tags: ${aws.instanceTags}
 
   ec2FleetDestroy:
