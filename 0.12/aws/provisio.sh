@@ -111,13 +111,20 @@ fi
 
 # Determine the instanceId of our instance
 instanceId=$(wget -qO- http://instance-data/latest/meta-data/instance-id)
+echo "instanceId = ${instanceId}"
 
 # Determine the region our instance resides in
 region=$(wget -qO- http://instance-data/latest/meta-data/placement/availability-zone | sed 's/.$//')
+echo "region = ${region}"
 
 provisioBucketPath=$(awsTagValue ${region} ${instanceId} ${provisioBucketPathTag})
+echo "provisioBucketPath = ${provisioBucketPath}"
+
 provisioInstallerProfile=$(awsTagValue ${region} ${instanceId} ${provisioInstallerProfileTag})
+echo "provisioInstallerProfile = ${provisioInstallerProfile}"
+
 provisioApplicationCoordinate=$(awsTagValue ${region} ${instanceId} ${provisioApplicationCoordinateTag})
+echo "provisioApplicationCoordinate = ${provisioApplicationCoordinate}"
 
 # ------------------------------------------------------------------------------
 # Provisio Installer
@@ -126,8 +133,14 @@ provisioApplicationCoordinate=$(awsTagValue ${region} ${instanceId} ${provisioAp
 if [ ! -z "${provisioInstallerProfile}" ]; then
   provisioInstallerVersion="1.0.0"
   provisioInstaller="provisio-installer-${provisioInstallerVersion}.tar.gz"
-  provisioInstallerUrl="${provisioBucketPath}/releases/ca/vanzyl/provisio/provisio-installer/${provisioInstallerVersion}/${provisioInstaller}"
+  provisioInstallerUrl="${provisioBucketPath}/ca/vanzyl/provisio/provisio-installer/${provisioInstallerVersion}/${provisioInstaller}"
   provisioHome="/usr/local/provisio"
+
+  echo "Running Provisio tool installer with the following:"
+  echo "provisioInstallerVersion = ${provisioInstallerVersion}"
+  echo "provisioInstaller = ${provisioInstaller}"
+  echo "provisioInstallerUrl = ${provisioInstallerUrl}"
+  echo "provisioHome = ${provisioHome}"
 
   aws s3 cp ${provisioInstallerUrl} .
   tar xf ${provisioInstaller}
@@ -146,9 +159,13 @@ if [ ! -z "${provisioApplicationCoordinate}" ]; then
 
   # Create the artifact path from the provisio coordinate
   artifactPath=$(mavenCoordinateToArtifactPath "${provisioApplicationCoordinate}")
+  provisioApplicationUrl="${provisioBucketPath}/${artifactPath}"
+
+  echo "Running Provisio application installer with the following:"
+  echo "provisioApplicationUrl = ${provisioApplicationUrl}"
 
   # Fetch the specified provisio artifact
-  aws s3 cp "${provisioBucketPath}/${artifactPath}" "${provisioTarGz}"
+  aws s3 cp "${provisioApplicationUrl}" "${provisioTarGz}"
 
   # Extract the standard metadata from the provisio.tar.gz
   tar xf "${provisioTarGz}" "${provisioDirectory}"
@@ -159,6 +176,9 @@ if [ ! -z "${provisioApplicationCoordinate}" ]; then
   # - ${user}
   # - ${packages}
   source ${provisioManifest}
+
+  echo "user = ${user}"
+  echo "package = ${packages}"
 
   # Add specified user as per provisio manifest. This should work on the various
   # standard linux distributions
