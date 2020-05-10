@@ -59,7 +59,7 @@ debug "Instance PublicIp = ${publicIp}"
 debug "Instance Pem = ${pem}"
 debug "Instance SSH = ${sshCommand}"
 
-for i in {1..30}
+for i in {1..40}
 do
   debug "Attempt ${i} to connect to ASG compute ..."
   ${sshCommand} && echo "OK" && break
