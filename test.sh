@@ -8,6 +8,7 @@ version="0.12"
 provider="aws"
 
 targetDir="${basedir}/target/${version}"
+rm -rf ${targetDir} 2>/dev/null
 mkdir -p ${targetDir} 2>/dev/null
 
 testResults="${targetDir}/test-results.txt"
