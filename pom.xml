@@ -8,7 +8,7 @@
     </parent>
     <artifactId>concord-terraform</artifactId>
     <groupId>ca.vanzyl.concord.terraform</groupId>
-    <version>1.0.6</version>
+    <version>1.0.7-SNAPSHOT</version>
     <packaging>provisio-zip</packaging>
 
     <build>
@@ -21,8 +21,4 @@
         </plugin>
       </plugins>
     </build>
-
-  <scm>
-    <tag>concord-terraform-1.0.6</tag>
-  </scm>
 </project>
