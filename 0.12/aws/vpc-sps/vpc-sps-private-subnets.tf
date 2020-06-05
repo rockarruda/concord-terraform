@@ -41,19 +41,18 @@ resource "aws_route_table" "private_routes" {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = lookup(aws_nat_gateway.nat-gateway, each.key).id
   }
-  tags       = merge({ Name = "${var.vpc_name}-${each.value.availability_zone}-private-route" }, var.tags, lookup(var.vpc_availability_zones, each.value.availability_zone).tags)
   depends_on = [aws_nat_gateway.nat-gateway, aws_subnet.private]
 }
 
 # Associate each private route table with private subnets
 locals {
   azs_to_private_route = {
-    for public_subnet_key in keys(aws_subnet.public) :
-    lookup(aws_subnet.public, public_subnet_key).availability_zone => lookup(aws_route_table.private_routes, public_subnet_key)
+    for az_index in ( length(aws_route_table.private_routes) > 0 ? range(length(aws_route_table.private_routes)) : [] ) :
+    keys(var.vpc_availability_zones)[az_index] => lookup(aws_route_table.private_routes, keys(aws_route_table.private_routes)[az_index])
   }
 }
 resource "aws_route_table_association" "private_route_association" {
-  count          = length(aws_subnet.private)
+  count          = length(aws_route_table.private_routes) > 0 ? length(aws_subnet.private) : 0
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = lookup(local.azs_to_private_route, aws_subnet.private[count.index].availability_zone).id
   depends_on     = [aws_route_table.private_routes]
