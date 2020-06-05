@@ -51,12 +51,14 @@ function testModule() {
   if [ -d ${modulePath} ]; then
     (
       cd ${modulePath}
-      if [ -d tests ]; then
-        echo "Testing '${module}' module ..."
-
+      echo "Testing '${module}' module  ..."
+      for testSubDir in $( find . -type f -name "*.bats" | rev | sed -E "s|^([^/]+)/(.*)$|\2|" | rev ); do
+        testName=$( echo "$testSubDir" | cut -d / -f 2,3 )
+        echo " - Running test '${testName}' ..."
         (
-          cd tests
-          testDir="${targetDir}/${module}"
+          cd ${testName}
+          testDir="${targetDir}/${module}/${testName}"
+          mkdir -p ${testDir}
           processFiles "${testDir}" "${modulesPath}" "${modulePath}"
 
           if [ -f terraform-requirements ]; then
@@ -88,8 +90,7 @@ function testModule() {
             cd ${targetDir}
             processTerraformVars
             [ -f terraform-pre-tests ] && echo && bash ./terraform-pre-tests
-
-            #exit 0; #TODO remove
+            
             if [ ! -f .noterraform ]; then
               start=$SECONDS
               terraform init -no-color
@@ -115,12 +116,12 @@ function testModule() {
                 testState="FAIL"
               fi
               duration=$(( SECONDS - start ))
-              echo "${module}:${testState}:${duration}" >> ${testResults}
+              echo "${module}(${testName}):${testState}:${duration}" >> ${testResults}
             fi
           )
           # Stepping out of module
         )
-      fi
+      done
     )
   fi
 }
