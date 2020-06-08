@@ -1,6 +1,12 @@
 # Create public subnet in VPC for each defined Availability Zone
+locals {
+  public_subnet_cidrs = {
+    for az, obj in var.vpc_availability_zones :
+    az => obj if obj.public_subnet_cidr != null && obj.public_subnet_cidr != ""
+  }
+}
 resource "aws_subnet" "public" {
-  for_each          = var.vpc_availability_zones
+  for_each          = local.public_subnet_cidrs
   vpc_id            = aws_vpc.main.id
   availability_zone = each.key
   cidr_block        = each.value.public_subnet_cidr
@@ -12,7 +18,7 @@ resource "aws_subnet" "public" {
       tags,
     ]
   }
-  
+
   depends_on = [aws_vpc.main, var.vpc_availability_zones]
 }
 
@@ -20,7 +26,7 @@ resource "aws_subnet" "public" {
 resource "aws_route_table_association" "public-subnet-to-main" {
   for_each       = aws_subnet.public
   subnet_id      = each.value.id
-  route_table_id = aws_route_table.main.id
+  route_table_id = aws_route_table.main[0].id
   depends_on     = [aws_route_table.main]
 }
 
@@ -32,7 +38,7 @@ resource "aws_eip" "eips" {
   depends_on = [aws_internet_gateway.main]
 }
 
-# Crate NAT Gateway 
+# Crate NAT Gateway
 resource "aws_nat_gateway" "nat-gateway" {
   for_each      = aws_eip.eips
   allocation_id = each.value.id
