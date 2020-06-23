@@ -4,10 +4,12 @@
         {
             "Effect": "Allow",
             "Action": [
-                "logs:CancelExportTask",
-                "logs:CreateExportTask",
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+                "logs:CancelExportTask",
+                "logs:CreateExportTask",
                 "logs:DeleteDestination",
                 "logs:DeleteLogGroup",
                 "logs:DeleteLogStream"
